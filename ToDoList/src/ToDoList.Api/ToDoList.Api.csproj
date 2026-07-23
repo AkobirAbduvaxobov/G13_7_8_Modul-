@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Middlewares\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ToDoList.Application\ToDoList.Application.csproj" />
     <ProjectReference Include="..\ToDoList.Persistence\ToDoList.Infrastructure.csproj" />
   </ItemGroup>
