@@ -1,6 +1,7 @@
 
 using ToDoList.Api.Configurations;
 using ToDoList.Infrastructure;
+using ToDoList.Application;
 
 namespace ToDoList.Api;
 
@@ -20,6 +21,7 @@ public class Program
         builder.ConfigureJwt();
         builder.ConfigureDBConnectionString();
         builder.Services.ConfigureInfrastructure(builder.Configuration);
+        builder.Services.ConfigureApplication(builder.Configuration);
 
         var app = builder.Build();
 

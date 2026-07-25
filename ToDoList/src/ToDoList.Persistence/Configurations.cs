@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ToDoList.Application.Abstractions;
+using ToDoList.Infrastructure.Implementations;
 using ToDoList.Infrastructure.Persistence;
 using ToDoList.Infrastructure.Persistence.Implementations;
 
@@ -18,5 +19,6 @@ public static class Configurations
 
 
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+        services.AddScoped<IPasswordHasherService, PasswordHasherService>();
     }
 }

@@ -12,6 +12,7 @@ public class User
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public string Password { get; set; }
-    public ICollection<ToDoItem> ToDoItems { get; set; }
-    public ICollection<RefreshToken> RefreshTokens { get; set; }
+    public string Salt { get; set; }
+    public ICollection<ToDoItem>? ToDoItems { get; set; }
+    public ICollection<RefreshToken>? RefreshTokens { get; set; }
 }
