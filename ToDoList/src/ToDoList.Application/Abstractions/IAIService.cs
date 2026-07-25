@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ToDoList.Infrastructure.Persistence.Implementations
+namespace ToDoList.Application.Abstractions;
+
+public interface IAIService
 {
-    internal class a
-    {
-    }
 }

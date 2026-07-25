@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ToDoList.Infrastructure.Implementations
+namespace ToDoList.Application.Abstractions;
+
+public interface INotificationService
 {
-    internal class a
-    {
-    }
 }
