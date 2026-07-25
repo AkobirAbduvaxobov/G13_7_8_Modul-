@@ -20,5 +20,6 @@ public static class Configurations
 
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
         services.AddScoped<IPasswordHasherService, PasswordHasherService>();
+        services.AddScoped<ITokenService, TokenService>();
     }
 }

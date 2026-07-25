@@ -9,20 +9,21 @@ public class AuthService : IAuthService
 {
     private readonly IBaseRepository<User> _userRepository;
     private readonly IPasswordHasherService _passwordHasherService;
+    private readonly ITokenService _tokenService;
 
-    public AuthService(IBaseRepository<User> userRepository, IPasswordHasherService passwordHasherService)
+    public AuthService(IBaseRepository<User> userRepository, IPasswordHasherService passwordHasherService, ITokenService tokenService)
     {
         _userRepository = userRepository;
         _passwordHasherService = passwordHasherService;
+        _tokenService = tokenService;
     }
 
     public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto)
     {
         var users = _userRepository.GetAllQuery();
 
-        var user = await users
-                    .Include(u => u.Password)
-                    .FirstOrDefaultAsync(u =>
+        var user = users
+                    .FirstOrDefault(u =>
                     u.UserName == loginDto.UserNameOrEmail
                     || u.Email == loginDto.UserNameOrEmail);
 
@@ -31,7 +32,7 @@ public class AuthService : IAuthService
             throw new UnauthorizedAccessException("Invalid username or email.");
         }
 
-        var isPasswordValid = PasswordHasher.Verify(loginDto.Password, user.Password.PasswordHash, user.Password.Salt);
+        var isPasswordValid = _passwordHasherService.Verify(loginDto.Password, user.Password, user.Salt);
 
         if (!isPasswordValid)
         {
@@ -50,7 +51,7 @@ public class AuthService : IAuthService
             CreatedAt = user.CreatedAt
         };
 
-        var token = TokenService.GetToken(userGetDto);
+        var token = _tokenService.GetToken(userGetDto);
 
         var loginResponseDto = new LoginResponseDto()
         {

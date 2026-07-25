@@ -1,13 +1,10 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using ToDoList.Application.Abstractions;
 using ToDoList.Application.Dtos;
+using ToDoList.Application.Settings;
 
 namespace ToDoList.Infrastructure.Implementations
 {

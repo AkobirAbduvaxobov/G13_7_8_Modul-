@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using ToDoList.Application.Abstractions;
 using ToDoList.Application.Dtos;
-using ToDoList.Application.Services;
 
 namespace ToDoList.Api.Controllers;
 
@@ -21,5 +20,12 @@ public class AuthController : ControllerBase
     {
         var userId = await _authService.RegisterAsync(registerDto);
         return userId;
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginDto loginDto)
+    {
+        var result = await _authService.LoginAsync(loginDto);
+        return result;
     }
 }

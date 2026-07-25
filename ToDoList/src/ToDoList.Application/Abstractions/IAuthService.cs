@@ -1,6 +1,6 @@
 ﻿using ToDoList.Application.Dtos;
 
-namespace ToDoList.Application.Services;
+namespace ToDoList.Application.Abstractions;
 
 public interface IAuthService
 {
