@@ -1,6 +1,6 @@
-﻿namespace ToDoList.Application.Services
+﻿namespace ToDoList.Application.Abstractions;
+
+public interface IToDoItemService
 {
-    public interface IToDoItemService
-    {
-    }
+    Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 }

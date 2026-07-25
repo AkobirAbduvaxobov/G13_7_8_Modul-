@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ToDoList.Domain.Entities;
-using ToDoList.Infrastructure.Persistence;
+using ToDoList.Application.Abstractions;
+using ToDoList.Application.Services;
 
 namespace ToDoList.Api.Controllers;
 
@@ -10,28 +9,24 @@ namespace ToDoList.Api.Controllers;
 [ApiController]
 public class ToDoItemsController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IToDoItemService _toDoItemService;
 
-    public ToDoItemsController(AppDbContext context)
+    public ToDoItemsController(IToDoItemService toDoItemService)
     {
-        _context = context;
+        _toDoItemService = toDoItemService;
     }
 
     [HttpDelete("{id:long}")]
-    public async Task<IActionResult> Delete(long id)
+    public async Task<IActionResult> Delete(long id, CancellationToken cancellationToken)
     {
-        var item = await _context.ToDoItems.FirstOrDefaultAsync(x => x.ToDoItemId == id && !x.IsDeleted);
-
-        if (item is null)
+        try
         {
-            return NotFound(new { message = "ToDo item topilmadi." });
+            await _toDoItemService.DeleteAsync(id, cancellationToken);
+            return NoContent();
         }
-
-        item.IsDeleted = true;
-        item.DeletedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync();
-
-        return NoContent();
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { message = ex.Message });
+        }
     }
 }
