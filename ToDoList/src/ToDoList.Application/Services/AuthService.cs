@@ -16,6 +16,54 @@ public class AuthService : IAuthService
         _passwordHasherService = passwordHasherService;
     }
 
+    public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto)
+    {
+        var users = _userRepository.GetAllQuery();
+
+        var user = await users
+                    .Include(u => u.Password)
+                    .FirstOrDefaultAsync(u =>
+                    u.UserName == loginDto.UserNameOrEmail
+                    || u.Email == loginDto.UserNameOrEmail);
+
+        if (user == null)
+        {
+            throw new UnauthorizedAccessException("Invalid username or email.");
+        }
+
+        var isPasswordValid = PasswordHasher.Verify(loginDto.Password, user.Password.PasswordHash, user.Password.Salt);
+
+        if (!isPasswordValid)
+        {
+            throw new UnauthorizedAccessException("Invalid password.");
+        }
+
+        var userGetDto = new UserGetDto()
+        {
+            UserId = user.UserId,
+            UserName = user.UserName,
+            Email = user.Email,
+            Role = user.Role,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            EmailConfirmed = user.EmailConfirmed,
+            CreatedAt = user.CreatedAt
+        };
+
+        var token = TokenService.GetToken(userGetDto);
+
+        var loginResponseDto = new LoginResponseDto()
+        {
+            AccessToken = token,
+            RefreshToken = null,
+            TokenType = "Bearer",
+            Expires = 5,
+        };
+
+
+        return loginResponseDto;
+    }
+
     public async Task<long> RegisterAsync(RegisterDto registerDto)
     {
         var user = _userRepository.GetAllQuery()
