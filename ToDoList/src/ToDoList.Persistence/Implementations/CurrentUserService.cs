@@ -1,8 +1,9 @@
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using ToDoList.Application.Abstractions;
 using ToDoList.Domain.Entities;
 
-namespace ToDoList.Api.Services;
+namespace ToDoList.Infrastructure.Implementations;
 
 public class CurrentUserService : ICurrentUserService
 {

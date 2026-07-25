@@ -12,7 +12,6 @@ public class Program
 
         builder.Services.AddControllers();
         builder.ConfigureSwagger();
-        builder.ConfigureCurrentUser();
         builder.ConfigureJwt();
         builder.ConfigureDBConnectionString();
         builder.Services.ConfigureInfrastructure(builder.Configuration);
