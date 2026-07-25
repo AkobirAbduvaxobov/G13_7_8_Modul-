@@ -1,4 +1,7 @@
-﻿using ToDoList.Api.Settings;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using ToDoList.Api.Settings;
 
 namespace ToDoList.Api.Configurations;
 
@@ -12,6 +15,9 @@ public static class JwtSettingConfiguration
         var lifetime = builder.Configuration["Jwt:Lifetime"];
         var refreshTokenLifetimeDays = builder.Configuration["Jwt:RefreshTokenLifetimeDays"];
 
+        if (string.IsNullOrWhiteSpace(secretKey))
+            throw new InvalidOperationException("Jwt:SecurityKey is not configured.");
+
         var jwtSettings = new JwtSettings
         {
             Issuer = issuer,
@@ -22,5 +28,29 @@ public static class JwtSettingConfiguration
         };
 
         builder.Services.AddSingleton(jwtSettings);
+
+        builder.Services
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = audience,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
     }
 }

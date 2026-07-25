@@ -1,7 +1,6 @@
-
 using ToDoList.Api.Configurations;
-using ToDoList.Infrastructure;
 using ToDoList.Application;
+using ToDoList.Infrastructure;
 
 namespace ToDoList.Api;
 
@@ -11,13 +10,9 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
+        builder.ConfigureSwagger();
+        builder.ConfigureCurrentUser();
         builder.ConfigureJwt();
         builder.ConfigureDBConnectionString();
         builder.Services.ConfigureInfrastructure(builder.Configuration);
@@ -25,7 +20,6 @@ public class Program
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (true || app.Environment.IsDevelopment())
         {
             app.UseSwagger();
@@ -34,6 +28,7 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
 
