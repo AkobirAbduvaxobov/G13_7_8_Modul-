@@ -1,7 +1,10 @@
 
 using ToDoList.Api.Configurations;
-using ToDoList.Infrastructure;
 using ToDoList.Application;
+using ToDoList.Application.Abstractions;
+using ToDoList.Application.Services;
+using ToDoList.Infrastructure;
+using ToDoList.Infrastructure.Persistence.Implementations;
 
 namespace ToDoList.Api;
 
@@ -17,6 +20,8 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddScoped<IToDoItemService, ToDoItemService>();
+        builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>)); 
 
         builder.ConfigureJwt();
         builder.ConfigureDBConnectionString();
