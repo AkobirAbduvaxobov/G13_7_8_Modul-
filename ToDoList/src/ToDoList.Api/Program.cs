@@ -19,7 +19,6 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         builder.ConfigureJwt();
-        builder.ConfigureDBConnectionString();
         builder.Services.ConfigureInfrastructure(builder.Configuration);
         builder.Services.ConfigureApplication(builder.Configuration);
 
