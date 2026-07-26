@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ToDoList.BlazorUI;
 using ToDoList.BlazorUI.Auth;
 using ToDoList.BlazorUI.Services;
-using Microsoft.Extensions.DependencyInjection; // Add this namespace for AddHttpClient extension method  
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
