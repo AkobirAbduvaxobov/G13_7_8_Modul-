@@ -1,5 +1,9 @@
-﻿namespace ToDoList.Application.Exceptions;
+namespace ToDoList.Application.Exceptions;
 
-public class UserNotFoundException
+public class UserNotFoundException : Exception
 {
+    public UserNotFoundException(string message)
+        : base(message)
+    {
+    }
 }

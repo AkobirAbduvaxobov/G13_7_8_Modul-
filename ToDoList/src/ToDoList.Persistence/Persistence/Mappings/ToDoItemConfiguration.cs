@@ -46,6 +46,9 @@ public class ToDoItemConfiguration : IEntityTypeConfiguration<ToDoItem>
 
         builder.Property(x => x.ReminderAt);
 
+        // Soft-deleted items are excluded from all queries by default.
+        builder.HasQueryFilter(x => !x.IsDeleted);
+
         builder.HasOne(x => x.User)
             .WithMany(x => x.ToDoItems)
             .HasForeignKey(x => x.UserId)

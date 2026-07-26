@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ToDoList.Application.Abstractions;
 using ToDoList.Application.Converters;
 using ToDoList.Application.Dtos;
@@ -15,41 +16,47 @@ public class AuthService : IAuthService
     private readonly IPasswordHasherService _passwordHasherService;
     private readonly ITokenService _tokenService;
     private readonly JwtSettings _jwtSettings;
+    private readonly ILogger<AuthService> _logger;
 
-    public AuthService(IBaseRepository<User> userRepository, 
-        IPasswordHasherService passwordHasherService, 
-        ITokenService tokenService, 
-        IBaseRepository<RefreshToken> refreshTokenRepository, 
-        JwtSettings jwtSettings)
+    public AuthService(IBaseRepository<User> userRepository,
+        IPasswordHasherService passwordHasherService,
+        ITokenService tokenService,
+        IBaseRepository<RefreshToken> refreshTokenRepository,
+        JwtSettings jwtSettings,
+        ILogger<AuthService> logger)
     {
         _userRepository = userRepository;
         _passwordHasherService = passwordHasherService;
         _tokenService = tokenService;
         _refreshTokenRepository = refreshTokenRepository;
         _jwtSettings = jwtSettings;
+        _logger = logger;
     }
 
     public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto)
     {
         var users = _userRepository.GetAllQuery();
 
-        var user =  await users.FirstOrDefaultAsync(u =>
+        var user = await users.FirstOrDefaultAsync(u =>
                     u.UserName == loginDto.UserNameOrEmail
                     || u.Email == loginDto.UserNameOrEmail);
 
         if (user == null)
         {
-            throw new UnauthorizedAccessException("Invalid username or email.");
+            throw new UnauthorizedException("Invalid username or email.");
         }
 
         var isPasswordValid = _passwordHasherService.Verify(loginDto.Password, user.Password, user.Salt);
 
         if (!isPasswordValid)
         {
-            throw new UnauthorizedAccessException("Invalid password.");
+            _logger.LogWarning("Failed login attempt for {Identifier}.", loginDto.UserNameOrEmail);
+            throw new UnauthorizedException("Invalid password.");
         }
 
         var loginResponseDto = await GenerateLoginResponseAsync(user);
+
+        _logger.LogInformation("User {UserId} logged in.", user.UserId);
 
         return loginResponseDto;
     }
@@ -68,10 +75,12 @@ public class AuthService : IAuthService
         var loginResponseDto = await GenerateLoginResponseAsync(storedToken.User);
 
         // Rotate: revoke the old refresh token and link it to the newly issued one.
-        storedToken.RevokedAt = DateTime.Now;
+        storedToken.RevokedAt = DateTime.UtcNow;
         storedToken.ReplacedByToken = loginResponseDto.RefreshToken;
         _refreshTokenRepository.Update(storedToken);
         await _refreshTokenRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Refresh token rotated for user {UserId}.", storedToken.UserId);
 
         return loginResponseDto;
     }
@@ -88,10 +97,33 @@ public class AuthService : IAuthService
 
         if (storedToken.IsActive)
         {
-            storedToken.RevokedAt = DateTime.Now;
+            storedToken.RevokedAt = DateTime.UtcNow;
             _refreshTokenRepository.Update(storedToken);
             await _refreshTokenRepository.SaveChangesAsync();
+            _logger.LogInformation("User {UserId} logged out.", storedToken.UserId);
         }
+    }
+
+    public async Task<int> PurgeExpiredRefreshTokensAsync()
+    {
+        var now = DateTime.UtcNow;
+
+        var staleTokens = await _refreshTokenRepository.GetAllQuery()
+            .Where(x => x.RevokedAt != null || x.ExpiresAt <= now)
+            .ToListAsync();
+
+        foreach (var token in staleTokens)
+        {
+            _refreshTokenRepository.Delete(token);
+        }
+
+        if (staleTokens.Count > 0)
+        {
+            await _refreshTokenRepository.SaveChangesAsync();
+            _logger.LogInformation("Purged {Count} expired/revoked refresh tokens.", staleTokens.Count);
+        }
+
+        return staleTokens.Count;
     }
 
     private async Task<LoginResponseDto> GenerateLoginResponseAsync(User user)
@@ -115,8 +147,8 @@ public class AuthService : IAuthService
         {
             Token = refreshTokenValue,
             UserId = user.UserId,
-            CreatedAt = DateTime.Now,
-            ExpiresAt = DateTime.Now.AddDays(_jwtSettings.RefreshTokenLifetimeDays),
+            CreatedAt = DateTime.UtcNow,
+            ExpiresAt = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenLifetimeDays),
         };
 
         await _refreshTokenRepository.AddAsync(refreshToken);
@@ -133,26 +165,28 @@ public class AuthService : IAuthService
 
     public async Task<long> RegisterAsync(RegisterDto registerDto)
     {
-        var user = await _userRepository.GetAllQuery()
+        var existingUser = await _userRepository.GetAllQuery()
             .FirstOrDefaultAsync(u => u.UserName == registerDto.UserName || u.Email == registerDto.Email);
 
-        if (user != null)
+        if (existingUser != null)
         {
-            throw new Exception("User with the same username or email already exists.");
+            throw new EmailAlreadyExistsException("A user with the same username or email already exists.");
         }
 
         var hashedPassword = _passwordHasherService.Hasher(registerDto.Password);
-        registerDto.Password = hashedPassword.Item1;
+        registerDto.Password = hashedPassword.Hash;
 
         var newUser = registerDto.ToEntity();
         newUser.CreatedAt = DateTime.UtcNow;
         newUser.UpdatedAt = DateTime.UtcNow;
-        newUser.Salt = hashedPassword.Item2;
+        newUser.Salt = hashedPassword.Salt;
         newUser.Role = UserRole.User;
         newUser.EmailConfirmed = false;
 
         await _userRepository.AddAsync(newUser);
         await _userRepository.SaveChangesAsync();
+
+        _logger.LogInformation("New user registered: {UserId}.", newUser.UserId);
 
         return newUser.UserId;
     }

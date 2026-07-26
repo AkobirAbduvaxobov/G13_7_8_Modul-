@@ -8,4 +8,5 @@ public interface IAuthService
     Task<LoginResponseDto> LoginAsync(LoginDto loginDto);
     Task<LoginResponseDto> RefreshTokenAsync(RefreshTokenRequestDto refreshTokenRequestDto);
     Task LogoutAsync(RefreshTokenRequestDto refreshTokenRequestDto);
+    Task<int> PurgeExpiredRefreshTokensAsync();
 }
