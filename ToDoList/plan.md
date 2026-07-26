@@ -42,38 +42,7 @@
 - [ ] Wrap controller returns in `ActionResult<T>` with correct status codes (201 on create, 204 on delete, etc.)
 - [ ] Standardize auth endpoint responses (Register currently returns a raw `long`)
 
-## 7. Notifications (currently empty stub)
-- [ ] Define the `INotificationService` interface (SendEmailAsync, etc.)
-- [ ] Implement `EmailNotificationService` (SMTP config from appsettings)
-- [ ] Add email settings section to `appsettings.json`
-- [ ] Register the notification service in DI
-
-## 8. Email Confirmation Flow (field exists, unused)
-- [ ] Generate an email-confirmation token on register
-- [ ] Add a "confirm email" endpoint that sets `EmailConfirmed = true`
-- [ ] Send the confirmation email via the notification service
-- [ ] Optionally block login until email is confirmed
-
-## 9. Reminders / Background Jobs (ReminderAt field exists, unused)
-- [ ] Add a background worker (HostedService / Hangfire) to scan due `ReminderAt` items
-- [ ] Send reminder notifications for tasks that are due
-- [ ] Make reminder scheduling configurable
-
-## 10. AI Features (services are empty stubs)
-- [ ] Define the `IAIService` interface (e.g. suggest tasks, summarize, prioritize)
-- [ ] Implement `OpenAIService` (call OpenAI API, read key from config)
-- [ ] Implement `AntropicService` (Anthropic API) — fix typo "Antropic" → "Anthropic"
-- [ ] Choose the active provider via configuration
-- [ ] Add AI API keys/settings to `appsettings.json` + user-secrets
-- [ ] Register the chosen AI service in DI
-- [ ] Add controller endpoint(s) exposing the AI features
-
-## 11. Caching (Redis configured, unused)
-- [ ] Wire up the Redis connection from `appsettings.json`
-- [ ] Add distributed caching for read-heavy endpoints (e.g. task lists)
-- [ ] Add cache invalidation on create/update/delete
-
-## 12. Authorization & Security
+## 7. Authorization & Security
 - [ ] Apply role-based authorization using the existing `UserRole` enum
 - [ ] Move the JWT `SecurityKey` and all secrets out of `appsettings.json` into user-secrets / environment variables
 - [ ] Use `DateTime.UtcNow` consistently (AuthService mixes `DateTime.Now` and `UtcNow`)
@@ -81,38 +50,18 @@
 - [ ] Configure CORS policy
 - [ ] Add rate limiting on auth endpoints
 
-## 13. Repository Enhancements
+## 8. Repository Enhancements
 - [ ] Add `GetByIdAsync` and async helpers to `IBaseRepository` / `BaseRepository`
 - [ ] Add an optional global query filter for soft-deleted entities
 
-## 14. Configuration & Documentation
-- [ ] Configure Swagger with JWT Bearer auth support (Authorize button)
-- [ ] Add XML comments / operation summaries to endpoints
-- [ ] Verify all settings bind correctly (`JwtSettings`, `DatabaseSettings`)
-- [ ] Add health check endpoint(s)
-
-## 15. Logging & Observability
+## 9. Logging & Observability
 - [ ] Add structured logging (Serilog)
 - [ ] Log requests, errors, and key auth events
 
-## 16. Testing
-- [ ] Add a unit test project (xUnit)
-- [ ] Unit tests for `AuthService` and `ToDoItemService`
-- [ ] Add an integration test project (WebApplicationFactory + in-memory/test DB)
-- [ ] Integration tests for auth and ToDoItem endpoints
-
-## 17. Database & Migrations
+## 10. Database & Migrations
 - [ ] Verify migrations apply cleanly against a fresh database
 - [ ] Add a seed for a default admin user / roles
 - [ ] Confirm indexes on frequently queried columns (UserId, Token, Email)
 
-## 18. Deployment
-- [ ] Add a `Dockerfile`
-- [ ] Add `docker-compose.yml` (API + SQL Server + Redis)
-- [ ] Externalize all environment-specific config
-- [ ] Set up a CI pipeline (build + test)
-
-## 19. Final Verification
+## 11. Final Verification
 - [ ] `dotnet build` the full solution with zero warnings/errors
-- [ ] Run all tests green
-- [ ] Manual smoke test of every endpoint via Swagger / `.http` file
