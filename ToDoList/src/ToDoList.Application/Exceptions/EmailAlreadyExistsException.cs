@@ -1,5 +1,9 @@
-﻿namespace ToDoList.Application.Exceptions;
+namespace ToDoList.Application.Exceptions;
 
-public class EmailAlreadyExistsException
+public class EmailAlreadyExistsException : Exception
 {
+    public EmailAlreadyExistsException(string message)
+        : base(message)
+    {
+    }
 }
