@@ -21,6 +21,8 @@ public class Program
         builder.ConfigureJwt();
         builder.Services.ConfigureInfrastructure(builder.Configuration);
         builder.Services.ConfigureApplication(builder.Configuration);
+        builder.AddJwtAuthentication();
+        builder.Services.ConfigureDI();
 
         var app = builder.Build();
 
@@ -33,6 +35,7 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
 
