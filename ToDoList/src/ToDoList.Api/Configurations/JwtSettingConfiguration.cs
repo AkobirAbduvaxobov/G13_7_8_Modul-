@@ -1,4 +1,4 @@
-﻿using ToDoList.Api.Settings;
+﻿using ToDoList.Application.Settings;
 
 namespace ToDoList.Api.Configurations;
 
