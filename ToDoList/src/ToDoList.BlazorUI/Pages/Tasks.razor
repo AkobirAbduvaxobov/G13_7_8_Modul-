@@ -1,6 +1,7 @@
 @page "/"
 @page "/tasks"
 @attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
 @using ToDoList.Domain.Entities
 @inject ToDoClientService Todo
 @inject ToastService Toasts
