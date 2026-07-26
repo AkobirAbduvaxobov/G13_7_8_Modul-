@@ -135,7 +135,7 @@ public class Program
         // 30 to-do items, then COMMENT OUT the line to avoid re-adding the data.
         // (It is also self-guarding: it skips seeding if users already exist.)
         // ============================================================================
-        await app.SeedSampleDataAsync();
+        //await app.SeedSampleDataAsync();
 
         await app.RunAsync();
     }

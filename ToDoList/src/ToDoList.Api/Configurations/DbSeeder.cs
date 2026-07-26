@@ -22,11 +22,11 @@ public static class DbSeeder
         var db = services.GetRequiredService<AppDbContext>();
         var passwordHasher = services.GetRequiredService<IPasswordHasherService>();
 
-        if (await db.Users.AnyAsync())
-        {
-            logger.LogInformation("Users already exist — skipping sample data seeding.");
-            return;
-        }
+        //if (true || await db.Users.AnyAsync())
+        //{
+        //    logger.LogInformation("Users already exist — skipping sample data seeding.");
+        //    return;
+        //}
 
         var now = DateTime.UtcNow;
 
