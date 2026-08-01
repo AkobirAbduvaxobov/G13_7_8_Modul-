@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35521.163 d17.12
+VisualStudioVersion = 17.12.35521.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{675C9AF9-D7BA-4482-AC37-2EE6BA10A290}"
 EndProject
@@ -14,6 +14,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.Infrastructure", "src\ToDoList.Persistence\ToDoList.Infrastructure.csproj", "{E71D5C77-C636-431A-A46C-B9C3CF90912C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoList.BlazorUI", "src\ToDoList.BlazorUI\ToDoList.BlazorUI.csproj", "{B7E2F3A1-1C4D-4E9F-A2B8-9D6C5E4F3A21}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D6B0621E-4E6C-425E-93D8-3118F8C11C9B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unit", "unit", "{5D8D5882-B317-4E02-B558-B376F73755E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "integration", "integration", "{D63BB7C8-323A-42AD-B3D2-31821472D53D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "tests\unit\Application\Application.csproj", "{B4418F98-449C-4D57-AB9C-4B1032DFB6FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +49,10 @@ Global
 		{B7E2F3A1-1C4D-4E9F-A2B8-9D6C5E4F3A21}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7E2F3A1-1C4D-4E9F-A2B8-9D6C5E4F3A21}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7E2F3A1-1C4D-4E9F-A2B8-9D6C5E4F3A21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4418F98-449C-4D57-AB9C-4B1032DFB6FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4418F98-449C-4D57-AB9C-4B1032DFB6FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4418F98-449C-4D57-AB9C-4B1032DFB6FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4418F98-449C-4D57-AB9C-4B1032DFB6FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,5 +63,8 @@ Global
 		{43EA899A-4DC3-4323-9CF8-227DEA2131A6} = {675C9AF9-D7BA-4482-AC37-2EE6BA10A290}
 		{E71D5C77-C636-431A-A46C-B9C3CF90912C} = {675C9AF9-D7BA-4482-AC37-2EE6BA10A290}
 		{B7E2F3A1-1C4D-4E9F-A2B8-9D6C5E4F3A21} = {675C9AF9-D7BA-4482-AC37-2EE6BA10A290}
+		{5D8D5882-B317-4E02-B558-B376F73755E4} = {D6B0621E-4E6C-425E-93D8-3118F8C11C9B}
+		{D63BB7C8-323A-42AD-B3D2-31821472D53D} = {D6B0621E-4E6C-425E-93D8-3118F8C11C9B}
+		{B4418F98-449C-4D57-AB9C-4B1032DFB6FD} = {5D8D5882-B317-4E02-B558-B376F73755E4}
 	EndGlobalSection
 EndGlobal

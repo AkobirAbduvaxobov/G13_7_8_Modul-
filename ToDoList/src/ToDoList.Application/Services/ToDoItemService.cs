@@ -122,8 +122,8 @@ public class ToDoItemService : IToDoItemService
     {
         var userId = GetCurrentUserId();
 
-        var entity = await _repository.GetAllQuery()
-            .FirstOrDefaultAsync(x => x.ToDoItemId == id && x.UserId == userId);
+        var entity = _repository.GetAllQuery()
+            .FirstOrDefault(x => x.ToDoItemId == id && x.UserId == userId);
 
         if (entity == null)
         {
