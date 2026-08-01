@@ -65,14 +65,14 @@ public class ToDoItemService : IToDoItemService
             queryable = queryable.Where(x => x.DueDate <= query.DueTo.Value);
         }
 
-        var totalCount = await queryable.CountAsync();
+        var totalCount = queryable.Count();
 
         queryable = ApplySorting(queryable, query);
 
-        var items = await queryable
+        var items = queryable
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
-            .ToListAsync();
+            .ToList();
 
         var dtos = items.Select(x => x.ToGetDto()).ToList();
 
