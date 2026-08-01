@@ -1,5 +1,6 @@
 ﻿using Moq;
 using ToDoList.Application.Abstractions;
+using ToDoList.Application.Dtos;
 using ToDoList.Application.Services;
 using ToDoList.Domain.Entities;
 
@@ -49,5 +50,56 @@ public class ToDoItemServiceTests
         _repository.Verify(r => r.SaveChangesAsync(), Times.Once);
         _repository.Verify(r => r.Update(todoItem1), Times.Once);
     }
+
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsOnlyCurrentUserTodoItems()
+    {
+        // Arrange
+        var todoItem1 = new ToDoItem
+        {
+            ToDoItemId = 1,
+            UserId = 1,
+            Title = "Task 1",
+            IsCompleted = false
+        };
+
+        var todoItem2 = new ToDoItem
+        {
+            ToDoItemId = 2,
+            UserId = 2,
+            Title = "Task 2",
+            IsCompleted = true
+        };
+
+        var query = new ToDoItemQueryParams
+        {
+            Page = 1,
+            PageSize = 10
+        };
+
+        _currentUser.Setup(x => x.UserId).Returns(1);
+
+        _repository.Setup(x => x.GetAllQuery())
+            .Returns(new List<ToDoItem>
+            {
+            todoItem1,
+            todoItem2
+            }.AsQueryable());
+
+        // Act
+        var result = await _service.GetAllAsync(query);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Single(result.Items);
+
+        Assert.Equal(1, result.TotalCount);
+
+        Assert.Equal(todoItem1.Title, result.Items.First().Title);
+
+        _repository.Verify(x => x.GetAllQuery(), Times.Once);
+    }
+
 
 }
