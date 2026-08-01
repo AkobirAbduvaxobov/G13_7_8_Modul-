@@ -65,14 +65,14 @@ public class ToDoItemService : IToDoItemService
             queryable = queryable.Where(x => x.DueDate <= query.DueTo.Value);
         }
 
-        var totalCount = await queryable.CountAsync();
+        var totalCount = queryable.Count();
 
         queryable = ApplySorting(queryable, query);
 
-        var items = await queryable
+        var items = queryable
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
-            .ToListAsync();
+            .ToList();
 
         var dtos = items.Select(x => x.ToGetDto()).ToList();
 
@@ -122,8 +122,8 @@ public class ToDoItemService : IToDoItemService
     {
         var userId = GetCurrentUserId();
 
-        var entity = await _repository.GetAllQuery()
-            .FirstOrDefaultAsync(x => x.ToDoItemId == id && x.UserId == userId);
+        var entity = _repository.GetAllQuery()
+            .FirstOrDefault(x => x.ToDoItemId == id && x.UserId == userId);
 
         if (entity == null)
         {
