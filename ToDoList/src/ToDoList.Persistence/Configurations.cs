@@ -15,7 +15,7 @@ public static class Configurations
         var connectionString = configuration.GetConnectionString("DatabaseConnection");
 
         services.AddDbContext<AppDbContext>(options =>
-          options.UseSqlServer(connectionString));
+            options.UseNpgsql(connectionString));
 
 
         services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
