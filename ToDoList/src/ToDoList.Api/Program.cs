@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
@@ -8,6 +9,7 @@ using ToDoList.Api.Filters;
 using ToDoList.Api.Middlewares;
 using ToDoList.Application;
 using ToDoList.Infrastructure;
+using ToDoList.Infrastructure.Persistence;
 
 namespace ToDoList.Api;
 
@@ -101,6 +103,13 @@ public class Program
         builder.Services.ConfigureDI();
 
         var app = builder.Build();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            dbContext.Database.Migrate();
+        }
 
         // ---- HTTP pipeline ----
         app.UseExceptionHandlingMiddleware();
